@@ -14,8 +14,43 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  //set variable column to zero and row to zero
+  //check spot[row, column]
+    //if no conflict, place rook
+    //if row !== n-1 then
+      //reset column, increment row and recurse to line 18
+    //else if number of rooks === n, push solution
 
+  var column = 0;
+  var row = 0;
+  var rooks = 0;
+  var solution;
+  var newBoard = new Board({n:n});
+
+
+  var recurseFunction = function(row, column){
+    if( !this.hasRowConflictAt( this.get(row)[column] ) || ( !this.hasColConflictAt(this.get(row)[column] ) ) ) {
+      this.set(row)[column] = 1;
+      rooks++;
+      if( row !== n-1){
+        column = 0;
+        row++;
+        recurseFunction(row, column);
+      } else {
+        if( rooks === n ){
+          solution = this;
+        }
+      }
+    } else {
+      column++;
+      recurseFunction(row, column);
+    }
+
+  };
+
+  recurseFunction.call(newBoard, row, column);
+  //
+  //
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -41,9 +76,12 @@ window.findNQueensSolution = function(n) {
 
     //if row & column === n, get last queen from solution and move it to next column without conflict.
 
+    //BASE CASES
+    //if after a queen is placed, queen === n, push solution
 
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+
   return solution;
 };
 
@@ -51,6 +89,10 @@ window.findNQueensSolution = function(n) {
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   var solutionCount = undefined; //fixme
+
+  //iterate n times calling findNQueensSolution, push each into an array, determine length of array
+
+
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
