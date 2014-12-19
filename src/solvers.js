@@ -14,47 +14,32 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
-  //set variable column to zero and row to zero
-  //check spot[row, column]
-    //if no conflict, place rook
-    //if row !== n-1 then
-      //reset column, increment row and recurse to line 18
-    //else if number of rooks === n, push solution
-
-  var column = 0;
-  var row = 0;
-  var rooks = 0;
-  var solution;
   var newBoard = new Board({n:n});
+  var size = n;
+  var solution;
 
-
-  var recurseFunction = function(row, column){
-    if( !this.hasRowConflictAt( this.get(row)[column] ) || ( !this.hasColConflictAt(this.get(row)[column] ) ) ) {
-      this.set(row)[column] = 1;
-      rooks++;
-      if( row !== n-1){
-        column = 0;
-        row++;
-        recurseFunction(row, column);
+  var helperfunction = function(row) {
+    for (var col = 0; col < size; col ++) {                        //get the row which is an array of column indices
+      newBoard.togglePiece(row,col);                               // toggle piece
+      if (newBoard.hasAnyRooksConflicts()) {                       // check if any Rook conflicts
+        newBoard.togglePiece(row,col)                              // if conflict, retoggle piece, step through for loop
       } else {
-        if( rooks === n ){
-          solution = this;
+        if (row === n-1) {                                         // if we are at the last row
+          // board = newBoard;                                     // set board
+          // console.log(board.rows());
+          return newBoard;                                         // return board to upper "recursion level"
+        } else {
+          return helperfunction(row++);                            // if no conflict, and row !== n-1, recurse with next row return board to
         }
       }
-    } else {
-      column++;
-      recurseFunction(row, column);
     }
+  }
 
-  };
-
-  recurseFunction.call(newBoard, row, column);
-  //
-  //
+  solution = helperfunction(0);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
-};
-
+  console.log(solution.rows());
+  return solution.rows();
+}
 
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
